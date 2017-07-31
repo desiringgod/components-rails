@@ -1,4 +1,4 @@
-require "components/rails/version"
+require 'components/rails/version'
 
 module Components
   module Rails
