@@ -102,7 +102,7 @@ module Components
         end
 
         def component_name
-          name.sub(/Component/, '').underscore
+          name.demodulize.sub(/Component/, '').underscore
         end
 
         protected
