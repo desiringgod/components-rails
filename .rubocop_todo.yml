@@ -30,3 +30,6 @@ RSpec/NestedGroups:
 
 RSpec/MultipleExpectations:
   Enabled: false
+
+RSpec/SubjectStub:
+  Enabled: false
