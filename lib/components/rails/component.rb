@@ -22,6 +22,8 @@ module Components
         @view = view
         @options = options
         @action = action
+
+        @block_content = options[:block].call if options[:block]
       end
 
       def action_name
@@ -54,6 +56,14 @@ module Components
 
       def perform_caching
         cache_key && self.class.perform_caching
+      end
+
+      def default_template
+        self.class == Components::Rails::Component ? "#{options[:component]}/#{action_name}" : action_name.to_s
+      end
+
+      def default_render
+        render(default_template)
       end
 
       private
@@ -114,18 +124,22 @@ module Components
         end
 
         def render_object(action, view, object, options)
-          klass = component_class(options[:component])
-          component = klass.new(object, view, action, options.except(:component))
+          component = new_component(action, view, object, options)
+
           component.send(action) if component.respond_to?(action)
-          action = "#{options[:component]}/#{action}" if klass == Component
-          @block_content = options[:block].call if options[:block]
-          component.render(action) if component.response_body.nil?
+          component.default_render if component.response_body.nil?
+
           component.response_body
         end
 
-        def component_class(component)
-          component = "#{component}_component" unless component =~ /component/
-          component.camelize.constantize
+        def new_component(action, view, object, options)
+          klass = component_class(options[:component])
+          klass.new(object, view, action, options)
+        end
+
+        def component_class(klass)
+          klass = "#{klass}_component" unless klass =~ /component/
+          klass.camelize.constantize
         rescue NameError => ex
           self
         end

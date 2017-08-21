@@ -9,6 +9,8 @@ end
 RSpec.describe Components::Rails::Component do
   subject { described_class.new(nil, :view, :action) }
 
+  let(:subclass) { Class.new(described_class) }
+
   it { is_expected.to be_kind_of(::ActionView::Rendering) }
   it { is_expected.to be_kind_of(::AbstractController::Helpers) }
   it { is_expected.to be_kind_of(::AbstractController::Rendering) }
@@ -17,6 +19,33 @@ RSpec.describe Components::Rails::Component do
   describe '#cache_key' do
     it 'raises an error' do
       expect(-> { subject.cache_key }).to raise_error(NotImplementedError)
+    end
+  end
+
+  describe '#default_template' do
+    context 'class is subclass of Component' do
+      let(:component) { subclass.new(nil, :view, :show) }
+
+      it 'returns the action' do
+        expect(component.default_template).to eq('show')
+      end
+    end
+
+    context 'class is Component' do
+      let(:component) { described_class.new(nil, :view, :index, component: 'example') }
+
+      it 'returns action with prefix of component option' do
+        expect(component.default_template).to eq('example/index')
+      end
+    end
+  end
+
+  describe '#default_render' do
+    before { allow(subject).to receive(:default_template).and_return(:template) }
+
+    it 'renders the default_template' do
+      expect(subject).to receive(:render).with(:template)
+      subject.default_render
     end
   end
 
@@ -30,7 +59,6 @@ RSpec.describe Components::Rails::Component do
       allow(component_instance).to receive(:render_to_body).and_return('rendered')
       allow(component_instance).to receive(:cache_key).and_return(:cache_key)
       described_class.send(:define_method, :the_action) {}
-      described_class.send(:define_method, :render_action) { render('view') }
     end
 
     it 'calls the action' do
@@ -55,16 +83,19 @@ RSpec.describe Components::Rails::Component do
       end
 
       context 'occurs in action' do
+        before { described_class.send(:define_method, :generic_action) { render('view') } }
+
         it 'does not trigger default view rendering' do
           expect(component_instance).to receive(:render).with('view')
           expect(component_instance).not_to receive(:render).with('the_action')
-          described_class.render_action('render_action', :view)
+          described_class.render_action('generic_action', :view)
         end
       end
 
       context 'does not occur in action' do
         it 'triggers default view rendering' do
-          expect(component_instance).to receive(:render).with('example/the_action')
+          allow(component_instance).to receive(:default_template).and_return(:default_template)
+          expect(component_instance).to receive(:render).with(:default_template)
           described_class.render_action('the_action', :view, component: :example)
         end
       end
