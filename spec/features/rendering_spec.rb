@@ -6,7 +6,7 @@ RSpec.describe 'rendering' do
   let(:component_class) do
     Class.new(Components::Rails::Component) do
       def cache_key
-        an_option
+        [an_option, block_content]
       end
 
       def show
@@ -58,5 +58,15 @@ RSpec.describe 'rendering' do
 
       more content
     eos
+  end
+
+  describe 'block_content in #cache_key' do
+    subject do
+      component_class.new(nil, ActionView::Base.new, :show, an_option: :value, block: proc { 'the block' })
+    end
+
+    it 'works' do
+      expect(subject.cache_key).to eq([:value, 'the block'])
+    end
   end
 end
