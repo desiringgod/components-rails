@@ -19,6 +19,16 @@ RSpec.describe 'rendering' do
         eos
       end
 
+      def index
+        render inline: <<~eos
+          some content
+
+          <%= block_content %>
+
+          more content
+        eos
+      end
+
       def an_option
         options[:an_option]
       end
@@ -33,6 +43,18 @@ RSpec.describe 'rendering' do
       some content
 
       value
+
+      more content
+    eos
+  end
+
+  it 'renders a component with a block' do
+    expect(component_class.render_action(:index, ActionView::Base.new) do
+      'content from block'
+    end).to eq(<<~eos)
+      some content
+
+      content from block
 
       more content
     eos
