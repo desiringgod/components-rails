@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'action_view/renderer/partial_renderer' # needed for PartialIteration
 
 module Components
@@ -138,7 +140,7 @@ module Components
         end
 
         def component_class(klass)
-          klass = "#{klass}_component" unless klass =~ /component/
+          klass = "#{klass}_component" unless klass.match? /component/
           klass.camelize.constantize
         rescue NameError => ex
           self
