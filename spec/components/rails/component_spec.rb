@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec::Matchers.define :a_partial_iteration_at_index do |index|

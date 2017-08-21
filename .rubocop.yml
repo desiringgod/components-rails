@@ -8,6 +8,9 @@
 
 inherit_from: .rubocop_todo.yml
 
+AllCops:
+  TargetRubyVersion: 2.4
+
 inherit_gem:
   guides: .rubocop.yml
 

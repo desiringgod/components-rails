@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'components/rails/version'
 require 'components/rails/caching'
 require 'components/rails/component'
