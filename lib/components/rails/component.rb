@@ -11,6 +11,7 @@ module Components
       include ::AbstractController::Helpers
       include ::AbstractController::Caching
       include Caching
+      include Attributes
 
       attr_accessor :object, :view, :attributes, :response_body
       attr_reader :block_content
@@ -22,7 +23,7 @@ module Components
       def initialize(object, view, action, attributes = {})
         @object = object
         @view = view
-        @attributes = attributes
+        @attributes = prepare_attributes(attributes)
         @action = action
 
         @block_content = attributes[:block].call if attributes[:block]
