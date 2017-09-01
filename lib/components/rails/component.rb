@@ -12,20 +12,20 @@ module Components
       include ::AbstractController::Caching
       include Caching
 
-      attr_accessor :object, :view, :options, :response_body
+      attr_accessor :object, :view, :attributes, :response_body
       attr_reader :block_content
-      helper_method :object, :block_content, :options
+      helper_method :object, :block_content, :attributes
 
       delegate :cache, :'output_buffer=', :output_buffer, to: :view
       delegate :cache_store, to: :class
 
-      def initialize(object, view, action, options = {})
+      def initialize(object, view, action, attributes = {})
         @object = object
         @view = view
-        @options = options
+        @attributes = attributes
         @action = action
 
-        @block_content = options[:block].call if options[:block]
+        @block_content = attributes[:block].call if attributes[:block]
       end
 
       def action_name
@@ -46,14 +46,14 @@ module Components
 
       def _process_options(options)
         super.tap do |opts|
-          if self.options[:collection_iteration]
-            opts[:locals] = {collection_iteration: self.options[:collection_iteration]}
+          if attributes[:collection_iteration]
+            opts[:locals] = {collection_iteration: attributes[:collection_iteration]}
           end
         end
       end
 
       def component_name
-        options[:component] || self.class.component_name
+        attributes[:component] || self.class.component_name
       end
 
       def perform_caching
@@ -61,7 +61,7 @@ module Components
       end
 
       def default_template
-        self.class == Components::Rails::Component ? "#{options[:component]}/#{action_name}" : action_name.to_s
+        self.class == Components::Rails::Component ? "#{attributes[:component]}/#{action_name}" : action_name.to_s
       end
 
       def default_render

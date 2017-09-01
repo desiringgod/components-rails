@@ -6,14 +6,14 @@ RSpec.describe 'rendering' do
   let(:component_class) do
     Class.new(Components::Rails::Component) do
       def cache_key
-        [an_option, block_content]
+        [an_attribute, block_content]
       end
 
       def show
         render inline: <<~eos
           some content
 
-          <%= an_option %>
+          <%= an_attribute %>
 
           more content
         eos
@@ -29,17 +29,17 @@ RSpec.describe 'rendering' do
         eos
       end
 
-      def an_option
-        options[:an_option]
+      def an_attribute
+        attributes[:an_attribute]
       end
-      helper_method :an_option
+      helper_method :an_attribute
     end
   end
 
   before { Object.const_set("My#{Time.now.subsec.numerator}Component", component_class) }
 
   it 'renders a component' do
-    expect(component_class.render_action(:show, ActionView::Base.new, an_option: 'value')).to eq(<<~eos)
+    expect(component_class.render_action(:show, ActionView::Base.new, an_attribute: 'value')).to eq(<<~eos)
       some content
 
       value
@@ -62,7 +62,7 @@ RSpec.describe 'rendering' do
 
   describe 'block_content in #cache_key' do
     subject do
-      component_class.new(nil, ActionView::Base.new, :show, an_option: :value, block: proc { 'the block' })
+      component_class.new(nil, ActionView::Base.new, :show, an_attribute: :value, block: proc { 'the block' })
     end
 
     it 'works' do
