@@ -4,9 +4,7 @@ module Components
   module Rails
     module ActionView
       def define_component_helper(name)
-        define_method(name) do |options = {}, &block|
-          render(component(name, options, &block))
-        end
+        define_method(name) { |options = {}, &block| component(name, options, &block) }
       end
       module_function :define_component_helper
 
@@ -29,7 +27,7 @@ module Components
 
       def component(component, options = {}, &block)
         action = options.delete(:action) || :show
-        {html: Component.render_action(action, self, options.merge(component: component), &block)}
+        Component.render_action(action, self, options.merge(component: component), &block)
       end
     end
   end
