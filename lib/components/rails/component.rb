@@ -10,6 +10,7 @@ module Components
       include ::ActionView::Rendering
       include ::AbstractController::Helpers
       include ::AbstractController::Caching
+      include Attributes
       include Caching
 
       attr_accessor :object, :view, :attributes, :response_body
@@ -35,10 +36,6 @@ module Components
       def cache_key
         return false if ::Rails.env.development?
         raise NotImplementedError, 'You must implement #cache_key'
-      end
-
-      def _render_template(options)
-        super(options.merge(locals: attributes))
       end
 
       def view_assigns
