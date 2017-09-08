@@ -6,7 +6,7 @@ RSpec.describe 'rendering' do
   let(:component_class) do
     Class.new(Components::Rails::Component) do
       def cache_key
-        [an_attribute, block_content]
+        [attributes[:an_attribute], block_content]
       end
 
       def show
@@ -28,11 +28,6 @@ RSpec.describe 'rendering' do
           more content
         eos
       end
-
-      def an_attribute
-        attributes[:an_attribute]
-      end
-      helper_method :an_attribute
     end
   end
 

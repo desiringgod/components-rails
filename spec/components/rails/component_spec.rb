@@ -78,10 +78,6 @@ RSpec.describe Components::Rails::Component do
         it 'makes helpers available in rendering' do
           expect(described_class._helper_methods).to include(:a_helper)
         end
-
-        it 'makes attributes available in rendering' do
-          expect(described_class._helper_methods).to include(:attributes)
-        end
       end
 
       context 'occurs in action' do

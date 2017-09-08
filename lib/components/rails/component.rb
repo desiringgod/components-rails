@@ -14,7 +14,7 @@ module Components
 
       attr_accessor :object, :view, :attributes, :response_body
       attr_reader :block_content
-      helper_method :object, :block_content, :attributes
+      helper_method :object, :block_content
 
       delegate :cache, :'output_buffer=', :output_buffer, to: :view
       delegate :cache_store, to: :class
@@ -35,6 +35,10 @@ module Components
       def cache_key
         return false if ::Rails.env.development?
         raise NotImplementedError, 'You must implement #cache_key'
+      end
+
+      def _render_template(options)
+        super(options.merge(locals: attributes))
       end
 
       def view_assigns
