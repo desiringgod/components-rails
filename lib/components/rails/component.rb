@@ -10,6 +10,7 @@ module Components
       include ::ActionView::Rendering
       include ::AbstractController::Helpers
       include ::AbstractController::Caching
+      include ::ActionView::Helpers::CaptureHelper
       include Attributes
       include Caching
 
@@ -26,7 +27,11 @@ module Components
         @attributes = attributes
         @action = action
 
-        @block_content = attributes[:block].call if attributes[:block]
+        if attributes[:block]
+          value = nil
+          buffer = with_output_buffer { value = attributes[:block].call }
+          @block_content = buffer.presence || value
+        end
       end
 
       def action_name
