@@ -12,7 +12,6 @@ require 'action_view/railtie'
 # require 'action_cable/engine'
 require 'rails/test_unit/railtie'
 # require 'sprockets/railtie'
-# require 'rspec/rails'
 
 ENV['RAILS_ENV'] ||= 'test'
 class ApplicationController < ActionController::Base; end
