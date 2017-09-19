@@ -2,32 +2,22 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Component rendering' do
-  let(:component_class) { Class.new(Components::Rails::Component) { def cache_key; '123'; end } }
-  let(:component_class_name) { "my_#{Time.now.subsec.numerator}_component" }
-  let(:action_view) { ActionView::Base.new }
-
-  before do
-    ActionView::Base.include Components::Rails::ActionView
-    Object.const_set(component_class_name.camelize, component_class)
-    Components::Rails::ActionView.define_component_helper(component_class_name)
-  end
-
+RSpec.describe 'Component rendering', type: :component_template do
   describe 'with attribute' do
     before do
-      component_class.send(:redefine_method, :show) do
-        render inline: <<~eos
-          some content
+      set_component_template(<<~eos)
+        some content
 
-          <%= an_attribute %>
+        <%= an_attribute %>
 
-          more content
-        eos
-      end
+        more content
+      eos
     end
 
     it 'works' do
-      expect(action_view.render(inline: "template <%= #{component_class_name}(an_attribute: 'val') %>")).to eq(<<~eos)
+      view_template = "template <%= #{component_class_name}(an_attribute: 'val') %>"
+
+      expect(render_view_template(view_template)).to eq(<<~eos)
         template some content
 
         val
@@ -41,9 +31,9 @@ RSpec.describe 'Component rendering' do
 
       context 'with attribute' do
         it 'uses the value' do
-          expect(
-            action_view.render(inline: "template <%= #{component_class_name}(an_attribute: 'given val') %>")
-          ).to eq(<<~eos)
+          view_template = "template <%= #{component_class_name}(an_attribute: 'given val') %>"
+
+          expect(render_view_template(view_template)).to eq(<<~eos)
             template some content
 
             given val
@@ -55,7 +45,9 @@ RSpec.describe 'Component rendering' do
 
       context 'without attribute' do
         it 'uses the default value' do
-          expect(action_view.render(inline: "template <%= #{component_class_name} %>")).to eq(<<~eos)
+          view_template = "template <%= #{component_class_name} %>"
+
+          expect(render_view_template(view_template)).to eq(<<~eos)
             template some content
 
             default value
@@ -69,15 +61,13 @@ RSpec.describe 'Component rendering' do
 
   describe 'with block' do
     before do
-      component_class.send(:redefine_method, :show) do
-        render inline: <<~eos
-          some content
+      set_component_template(<<~eos)
+        some content
 
-          <%= block_content %>
+        <%= block_content %>
 
-          more content
-        eos
-      end
+        more content
+      eos
 
       component_class.send(:redefine_method, :cache_key) do
         [attributes[:an_attribute], block_content]
@@ -85,11 +75,8 @@ RSpec.describe 'Component rendering' do
     end
 
     it 'works' do
-      expect(
-        action_view.render(
-          inline: "template <%= #{component_class_name}(an_attribute: 'value') do %>content from block<% end %>"
-        )
-      ).to eq(<<~eos)
+      view_template = "template <%= #{component_class_name}(an_attribute: 'value') do %>content from block<% end %>"
+      expect(render_view_template(view_template)).to eq(<<~eos)
         template some content
 
         content from block
