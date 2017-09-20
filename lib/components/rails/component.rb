@@ -67,7 +67,7 @@ module Components
       end
 
       def default_template
-        self.class == Components::Rails::Component ? "#{attributes[:component]}/#{action_name}" : action_name.to_s
+        self.class == Components::Rails::Component ? "#{component_path}/#{action_name}" : action_name.to_s
       end
 
       def default_render
