@@ -74,6 +74,10 @@ module Components
         render(default_template)
       end
 
+      def component_path
+        self.class == Components::Rails::Component ? attributes[:component] : self.class.component_path
+      end
+
       private
 
       def instrument_payload(key)
@@ -123,6 +127,10 @@ module Components
           name.demodulize.sub(/Component/, '').underscore
         end
 
+        def component_path
+          component_name.presence || 'application'
+        end
+
         protected
 
         def render_collection(action, view, collection, options)
@@ -156,10 +164,6 @@ module Components
         # Prefixes defined here will still be added to parents' <tt>._prefixes</tt>.
         def local_prefixes
           [component_path]
-        end
-
-        def component_path
-          component_name.presence || 'application'
         end
 
         def application_controller
