@@ -16,11 +16,23 @@ module Components
       end
 
       def cached_render
-        @cached_render ||= read_fragment(cache_key)
+        @cached_render ||= read_fragment(cache_fragment_name)
       end
 
       def cache_render
-        write_fragment(cache_key, response_body)
+        write_fragment(cache_fragment_name, response_body)
+      end
+
+      def cache_fragment_name
+        if digest = ::ActionView::Digestor.digest(name: virtual_path, finder: lookup_context)
+          ["#{virtual_path}:#{digest}", cache_key]
+        else
+          [virtual_path, name]
+        end
+      end
+
+      def virtual_path
+        "#{component_path}/#{action_name}"
       end
     end
   end

@@ -67,11 +67,15 @@ module Components
       end
 
       def default_template
-        self.class == Components::Rails::Component ? "#{attributes[:component]}/#{action_name}" : action_name.to_s
+        self.class == Components::Rails::Component ? "#{component_path}/#{action_name}" : action_name.to_s
       end
 
       def default_render
         render(default_template)
+      end
+
+      def component_path
+        self.class == Components::Rails::Component ? attributes[:component] : self.class.component_path
       end
 
       private
@@ -123,6 +127,10 @@ module Components
           name.demodulize.sub(/Component/, '').underscore
         end
 
+        def component_path
+          component_name.presence || 'application'
+        end
+
         protected
 
         def render_collection(action, view, collection, options)
@@ -156,10 +164,6 @@ module Components
         # Prefixes defined here will still be added to parents' <tt>._prefixes</tt>.
         def local_prefixes
           [component_path]
-        end
-
-        def component_path
-          component_name.presence || 'application'
         end
 
         def application_controller
