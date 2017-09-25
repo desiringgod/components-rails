@@ -34,6 +34,18 @@ module Components
       def virtual_path
         "#{component_path}/#{action_name}"
       end
+
+      def instrument_payload(key)
+        {
+          component: component_name,
+          action: action_name,
+          key: key
+        }
+      end
+
+      def instrument_name
+        'components'
+      end
     end
   end
 end
