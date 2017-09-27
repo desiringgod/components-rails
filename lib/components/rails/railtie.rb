@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails/railtie'
+require 'action_controller/log_subscriber'
 
 module Components
   module Rails
@@ -23,6 +24,7 @@ module Components
 
       initializer 'components.rails_extensions' do |app|
         Components::Rails::ActionView.reload_component_helpers
+        ActionController::LogSubscriber.attach_to :components
 
         ActiveSupport.on_load(:action_controller) do
           class_eval do

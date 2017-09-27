@@ -78,20 +78,6 @@ module Components
         self.class == Components::Rails::Component ? attributes[:component] : self.class.component_path
       end
 
-      private
-
-      def instrument_payload(key)
-        {
-          component: component_name,
-          action: action_name,
-          key: key
-        }
-      end
-
-      def instrument_name
-        'component'
-      end
-
       class << self
         delegate :perform_caching, :cache_store, to: :application_controller
 
