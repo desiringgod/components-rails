@@ -11,8 +11,213 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   TargetRubyVersion: 2.4
 
-inherit_gem:
-  guides: .rubocop.yml
-
 require:
   - rubocop-rspec
+
+Layout/TrailingWhitespace:
+  Description: 'Avoid trailing whitespace.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace'
+  Enabled: true
+
+Layout/TrailingBlankLines:
+  Description: 'Checks trailing blank lines and final newline.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#newline-eof'
+  Enabled: true
+
+# From the Cop:
+# This is interpreted as a method invocation with a regexp literal,
+# but it could possibly be `/` method invocations.
+# (i.e. `do_something./(pattern)./(i)`)
+# This does not appear to be a major concern for us, therefore we are disabling it.
+Lint/AmbiguousRegexpLiteral:
+  Description: >-
+               Checks for ambiguous regexp literals in the first argument of
+               a method invocation without parentheses.
+  Enabled: false
+
+# We use assignment in conditions as a useful feature.
+# Configuration parameters: AllowSafeAssignment.
+Lint/AssignmentInCondition:
+  Description: "Don't use assignment in conditions."
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#safe-assignment-in-condition'
+  Enabled: false
+
+# Cop supports --auto-correct.
+Lint/UnusedBlockArgument:
+  Description: 'Checks for unused block arguments.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars'
+  Enabled: false
+
+# Cop supports --auto-correct.
+Style/BlockComments:
+  Description: 'Do not use block comments.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-block-comments'
+  Enabled: false
+
+Style/CaseEquality:
+  Description: 'Avoid explicit use of the case equality operator(===).'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-case-equality'
+  Enabled: false
+
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+Style/ClassAndModuleChildren:
+  Description: 'Checks style of children classes and modules.'
+  Enabled: false
+
+Style/Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: false
+
+# Configuration parameters: MinBodyLength.
+Style/GuardClause:
+  Description: 'Check for conditionals that can be replaced with guard clauses'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals'
+  Enabled: false
+
+# Configuration parameters: MaxLineLength.
+Style/IfUnlessModifier:
+  Description: >-
+                 Favor modifier if/unless usage when you have a
+                 single-line body.
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier'
+  Enabled: false
+
+# Cop supports --auto-correct.
+Style/PerlBackrefs:
+  Description: 'Avoid Perl-style regex back references.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-perl-regexp-last-matchers'
+  Enabled: false
+
+# Cop supports --auto-correct.
+# Configuration parameters: AllowAsExpressionSeparator.
+Style/Semicolon:
+  Description: "Don't use semicolons to terminate expressions."
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-semicolon'
+  Enabled: false
+
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+Style/SignalException:
+  Description: 'Checks for proper usage of fail and raise.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#fail-method'
+  Enabled: false
+
+# Cop supports --auto-correct.
+# Configuration parameters: AllowIfMethodIsEmpty.
+Style/SingleLineMethods:
+  Description: 'Avoid single-line methods.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-single-line-methods'
+  Enabled: false
+
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SupportedStyles.
+Layout/SpaceInsideHashLiteralBraces:
+  Description: "Use spaces inside hash literal braces - or don't."
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-operators'
+  Enabled: false
+
+# The reason to use this style is to maintain consistency
+# Both Option A and Option B of quoting strings mentinoed in the guide are great
+# There is some discussion on this here: https://github.com/bbatsov/ruby-style-guide/issues/96
+# We have chosen to go with A. Some very minor reasons are:
+#  - It is the default option
+#  - It allows for better chaces of nesting strings without having to use escape characters
+#      Ex: `grep -r "require 'my-file'"`
+#  - The current team in general tended to prefer Option A
+# Cop supports --auto-correct.
+# Configuration parameters: EnforcedStyle, SupportedStyles.
+Style/StringLiterals:
+  Description: 'Checks if uses of quotes match the configured preference.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-string-literals'
+  Enabled: true
+
+# If used this doesn't allow for methods like 'has_gateway_errors' in specs
+# Configuration parameters: NamePrefix, NamePrefixBlacklist.
+Naming/PredicateName:
+  Description: 'Check the names of predicate methods.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark'
+  Enabled: false
+
+# If `comma`, the cop requires a comma after the last argument, but only for
+# parenthesized method calls where each argument is on its own line.
+# If `consistent_comma`, the cop requires a comma after the last argument,
+# for all parenthesized method calls with arguments.
+Style/TrailingCommaInArguments:
+  Description: 'Checks for trailing comma in argument lists.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
+
+# If `comma`, the cop requires a comma after the last item in an array or
+# hash, but only when each item is on its own line.
+# If `consistent_comma`, the cop requires a comma after the last item of all
+# non-empty array and hash literals.
+Style/TrailingCommaInArrayLiteral:
+  Description: 'Checks for trailing comma in array literals.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
+
+# If `comma`, the cop requires a comma after the last item in an array or
+# hash, but only when each item is on its own line.
+# If `consistent_comma`, the cop requires a comma after the last item of all
+# non-empty array and hash literals.
+Style/TrailingCommaInHashLiteral:
+  Description: 'Checks for trailing comma in hash literals.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
+  Enabled: true
+  EnforcedStyleForMultiline: no_comma
+
+# Enabling this makes smaller arrays not very reable.
+# It might be possible to achieve a good balance by tweaking MinSize
+Style/WordArray:
+  Description: 'Use %w or %W for arrays of words.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-w'
+  Enabled: false
+
+# Allow use of FlipFlop operator. It might be removed in Ruby 3.0, and it's a little
+# obscure, but other than that, there seems to be no downside.
+Style/FlipFlop:
+  Description: 'Checks for flip flops'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-flip-flops'
+  Enabled: false
+
+# Allow inject/reduce instead of each_with_object.
+Style/EachWithObject:
+  Description: 'Prefer `each_with_object` over `inject` or `reduce`.'
+  Enabled: false
+
+Style/Next:
+  Description: 'Use `next` to skip iteration instead of a condition at the end.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals'
+  Enabled: false
+
+
+# We break this convention intentionally.
+# At times, for example, when making api calls, it helps to use `get_` prefix.
+Naming/AccessorMethodName:
+  Description: Check the naming of accessor methods for get_/set_.
+  Enabled: false
+
+Style/SingleLineBlockParams:
+  Description: 'Enforces the names of some block params.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#reduce-blocks'
+  Enabled: false
+  
+# Disable this because it's a really useful short form way of dealing with exceptions in certain scenarios.
+# Leave it up to the developer to make that decision.
+Style/RescueModifier:
+  Description: 'Avoid using rescue in its modifier form.'
+  StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers
+  Enabled: false
+
+
+# This seems to be a nice line length for github
+Metrics/LineLength:
+  Max: 118
+  AllowURI: true
+
+Naming/UncommunicativeMethodParamName:
+  MinNameLength: 3
+  AllowNamesEndingInNumbers: true
+  AllowedNames: ['_', 'at', 'to', 'id']
